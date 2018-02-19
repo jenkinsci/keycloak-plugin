@@ -66,6 +66,7 @@ import org.kohsuke.stapler.Header;
 import org.kohsuke.stapler.HttpRedirect;
 import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.HttpResponses;
+import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
@@ -74,6 +75,7 @@ import hudson.model.Descriptor;
 import hudson.model.User;
 import hudson.security.SecurityRealm;
 import hudson.tasks.Mailer;
+import hudson.util.FormValidation;
 import net.sf.json.JSONObject;
 
 /**
@@ -340,6 +342,20 @@ public class KeycloakSecurityRealm extends SecurityRealm {
 		 */
 		public DescriptorImpl() {
 			load();
+		}
+
+		/**
+		 * Validator for keycloakJson
+		*/
+		public FormValidation doCheckKeycloakJson(@QueryParameter String value) throws ServletException {
+			try {
+				if (value != null && !value.isEmpty()) {
+					JsonSerialization.readValue(value, AdapterConfig.class);
+				}
+			} catch (IOException ex) {
+				return FormValidation.error("Invalid adapter config");
+			}
+			return FormValidation.ok();
 		}
 
 		@Override
