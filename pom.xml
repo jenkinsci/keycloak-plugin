@@ -14,7 +14,7 @@
 	<description>Integrates with Keycloak Authentication</description>
 	<packaging>hpi</packaging>
 
-	<url>http://wiki.jenkins-ci.org/display/JENKINS/Keycloak+OAuth+Plugin</url>
+	<url>http://wiki.jenkins.io/display/JENKINS/keycloak-plugin</url>
 
 	<issueManagement>
 		<system>jira</system>
