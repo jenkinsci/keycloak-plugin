@@ -37,6 +37,7 @@ import javax.security.cert.X509Certificate;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import jenkins.security.SecurityListener;
 import org.acegisecurity.Authentication;
 import org.acegisecurity.AuthenticationException;
 import org.acegisecurity.AuthenticationManager;
@@ -235,8 +236,9 @@ public class KeycloakSecurityRealm extends SecurityRealm {
 				JWSInput input = new JWSInput(idTokenString);
 
 				IDToken idToken = input.readJsonContent(IDToken.class);
-				SecurityContextHolder.getContext()
-						.setAuthentication(new KeycloakAuthentication(idToken, token, refreshToken, tokenResponse));
+
+				KeycloakAuthentication auth = new KeycloakAuthentication(idToken, token, refreshToken, tokenResponse);
+				SecurityContextHolder.getContext().setAuthentication(auth);
 
 				User currentUser = User.current();
 				if (currentUser != null) {
@@ -245,6 +247,11 @@ public class KeycloakSecurityRealm extends SecurityRealm {
 					if (!currentUser.getProperty(Mailer.UserProperty.class).hasExplicitlyConfiguredAddress()) {
 						currentUser.addProperty(new Mailer.UserProperty(idToken.getEmail()));
 					}
+
+					KeycloakUserDetails userDetails = new KeycloakUserDetails(
+							idToken.getPreferredUsername(), auth.getAuthorities()
+					);
+					SecurityListener.fireAuthenticated(userDetails);
 				}
 			}
 
