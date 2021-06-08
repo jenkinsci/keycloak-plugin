@@ -23,7 +23,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<keycloak.version>9.0.3</keycloak.version>
+		<keycloak.version>13.0.0</keycloak.version>
 		<jenkins.version>2.190.1</jenkins.version>
 		<log4j.version>1.7.26</log4j.version>
 		<java.level>8</java.level>
