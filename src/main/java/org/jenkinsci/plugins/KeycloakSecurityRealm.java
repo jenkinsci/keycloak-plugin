@@ -38,6 +38,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.common.base.Strings;
+import hudson.model.Descriptor.FormException;
 import jenkins.security.SecurityListener;
 import org.acegisecurity.Authentication;
 import org.acegisecurity.AuthenticationException;
@@ -383,7 +384,7 @@ public class KeycloakSecurityRealm extends SecurityRealm {
 		}
 
 		@Override
-		public boolean configure(StaplerRequest req, JSONObject json) throws hudson.model.Descriptor.FormException {
+		public SecurityRealm newInstance(StaplerRequest req, JSONObject json) throws FormException {
 			json = json.getJSONObject("keycloak");
 			// if json contains keycloakvalidate then keycloakvalidate is true
 			if (json.containsKey("keycloakValidate")) {
@@ -398,7 +399,7 @@ public class KeycloakSecurityRealm extends SecurityRealm {
 				json.put("keycloakValidate", false);
 				json.put("keycloakRespectAccessTokenTimeout", true);
 			}
-			return super.configure(req, json);
+			return super.newInstance(req, json);
 		}
 
 		@Restricted(NoExternalUse.class) // Only for loading in from legacy disk
