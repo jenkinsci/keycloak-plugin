@@ -384,22 +384,26 @@ public class KeycloakSecurityRealm extends SecurityRealm {
 		}
 
 		@Override
-		public SecurityRealm newInstance(StaplerRequest req, JSONObject json) throws FormException {
-			json = json.getJSONObject("keycloak");
+		public SecurityRealm newInstance(StaplerRequest req, JSONObject formData) throws FormException {
+
+			JSONObject keycloak = new JSONObject();
+
+			JSONObject keycloakData = formData.getJSONObject("keycloak");
+			keycloak.putAll(keycloakData);
 			// if json contains keycloakvalidate then keycloakvalidate is true
-			if (json.containsKey("keycloakValidate")) {
+			if (keycloakData.containsKey("keycloakValidate")) {
 				LOGGER.log(Level.FINE, "Keycloakvalidate set to true");
-				json.put("keycloakValidate", true);
-				JSONObject validate = json.getJSONObject("keycloakValidate");
+				keycloak.put("keycloakValidate", true);
+				JSONObject validate = keycloakData.getJSONObject("keycloakValidate");
 				if (validate.containsKey("keycloakRespectAccessTokenTimeout")) {
-					json.put("keycloakRespectAccessTokenTimeout", validate.getBoolean("keycloakRespectAccessTokenTimeout"));
+					keycloak.put("keycloakRespectAccessTokenTimeout", validate.getBoolean("keycloakRespectAccessTokenTimeout"));
 					LOGGER.log(Level.FINE, "Respect access token timeout is set to " + validate.getBoolean("keycloakRespectAccessTokenTimeout"));
 				}
 			} else {
-				json.put("keycloakValidate", false);
-				json.put("keycloakRespectAccessTokenTimeout", true);
+				keycloak.put("keycloakValidate", false);
+				keycloak.put("keycloakRespectAccessTokenTimeout", true);
 			}
-			return super.newInstance(req, json);
+			return super.newInstance(req, keycloak);
 		}
 
 		@Restricted(NoExternalUse.class) // Only for loading in from legacy disk
