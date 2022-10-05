@@ -28,7 +28,7 @@
 		<log4j.version>1.7.26</log4j.version>
 		<java.level>8</java.level>
 		<configuration-as-code.version>1.36</configuration-as-code.version>
-		<jackson.version>2.12.2</jackson.version>
+		<jackson.version>2.12.6.1</jackson.version>
 	</properties>
 
 	<licenses>
