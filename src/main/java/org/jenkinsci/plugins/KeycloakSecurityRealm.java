@@ -38,6 +38,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jenkins.security.SecurityListener;
 import org.apache.commons.lang.StringUtils;
 import org.keycloak.KeycloakSecurityContext;
@@ -234,6 +235,7 @@ public class KeycloakSecurityRealm extends SecurityRealm {
 	 * @return {@link HttpResponse} the response
 	 * @throws IOException
 	 */
+	@SuppressFBWarnings(value = "REC_CATCH_EXCEPTION", justification = "We want to catch all exceptions")
 	public HttpResponse doFinishLogin(StaplerRequest request) throws IOException {
 
 		String redirect = redirectUrl(request);
@@ -271,6 +273,15 @@ public class KeycloakSecurityRealm extends SecurityRealm {
 
 					if (!currentUser.getProperty(Mailer.UserProperty.class).hasExplicitlyConfiguredAddress()) {
 						currentUser.addProperty(new Mailer.UserProperty(idToken.getEmail()));
+					}
+
+					// Set picture/avatar if present
+					String avatarUrl = idToken.getPicture();
+					if (avatarUrl != null) {
+						LOGGER.finest("Avatar url is: " + avatarUrl);
+						KeycloakAvatarProperty.AvatarImage avatarImage = new KeycloakAvatarProperty.AvatarImage(avatarUrl);
+						KeycloakAvatarProperty keycloakAvatarProperty = new KeycloakAvatarProperty(avatarImage);
+						currentUser.addProperty(keycloakAvatarProperty);
 					}
 
 					KeycloakUserDetails userDetails = new KeycloakUserDetails(
