@@ -4,11 +4,12 @@
 	<parent>
 		<groupId>org.jenkins-ci.plugins</groupId>
 		<artifactId>plugin</artifactId>
-		<version>4.54</version>
+		<version>4.88</version>
+		<relativePath />
 	</parent>
 
 	<artifactId>keycloak</artifactId>
-	<version>2.4.0-SNAPSHOT</version>
+	<version>${revision}${changelist}</version>
 	<name>Keycloak Authentication Plugin</name>
 	<description>Integrates with Keycloak Authentication</description>
 	<packaging>hpi</packaging>
@@ -21,15 +22,16 @@
 	</issueManagement>
 
 	<properties>
+		<revision>2.4.0</revision>
+		<changelist>-SNAPSHOT</changelist>
+		<gitHubRepo>jenkinsci/keycloak-plugin</gitHubRepo>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<keycloak.version>20.0.3</keycloak.version>
-		<jenkins.version>2.361.4</jenkins.version>
+		<!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
+		<jenkins.baseline>2.452</jenkins.baseline>
+		<jenkins.version>${jenkins.baseline}.4</jenkins.version>
 		<hpi.compatibleSinceVersion>2.3.1</hpi.compatibleSinceVersion>
-		<log4j.version>1.7.26</log4j.version>
-		<configuration-as-code.version>1569.vb_72405b_80249</configuration-as-code.version>
-		<jackson.version>2.13.4</jackson.version>
-		<jackson.databind.version>2.13.4.2</jackson.databind.version>
 	</properties>
 
 	<licenses>
@@ -58,88 +60,92 @@
 	</developers>
 
 	<scm>
-		<connection>scm:git:ssh://github.com/jenkinsci/jenkins-keycloak-plugin.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com/jenkinsci/jenkins-keycloak-plugin.git</developerConnection>
-		<url>https://github.com/jenkinsci/jenkins-keycloak-plugin</url>
-	  <tag>HEAD</tag>
+		<connection>scm:git:https://github.com/${gitHubRepo}.git</connection>
+		<developerConnection>scm:git:https://github.com/${gitHubRepo}.git</developerConnection>
+		<url>https://github.com/${gitHubRepo}</url>
+	    <tag>${scmTag}</tag>
   	</scm>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>io.jenkins.tools.bom</groupId>
+				<artifactId>bom-${jenkins.baseline}.x</artifactId>
+				<version>3875.v1df09947cde6</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.keycloak</groupId>
 			<artifactId>keycloak-core</artifactId>
 			<version>${keycloak.version}</version>
-			<scope>compile</scope>
+			<!-- provided by jackson2-api-->
+			<exclusions>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.core</groupId>
+					<artifactId>jackson-databind</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.core</groupId>
+					<artifactId>jackson-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.keycloak</groupId>
 			<artifactId>keycloak-authz-client</artifactId>
 			<version>${keycloak.version}</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.keycloak</groupId>
 			<artifactId>keycloak-adapter-core</artifactId>
 			<version>${keycloak.version}</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.keycloak</groupId>
 			<artifactId>keycloak-adapter-spi</artifactId>
 			<version>${keycloak.version}</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.jenkins-ci.plugins</groupId>
 			<artifactId>mailer</artifactId>
-			<version>408.vd726a_1130320</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-jdk14</artifactId>
-			<version>${log4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>${log4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>log4j-over-slf4j</artifactId>
-			<version>${log4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
-			<version>${log4j.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-core</artifactId>
-			<version>${jackson.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>${jackson.databind.version}</version>
+			<groupId>org.jenkins-ci.plugins</groupId>
+			<artifactId>jackson2-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>io.jenkins</groupId>
 			<artifactId>configuration-as-code</artifactId>
-			<version>${configuration-as-code.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.jenkins.configuration-as-code</groupId>
 			<artifactId>test-harness</artifactId>
-			<version>${configuration-as-code.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.jenkins.plugins</groupId>
 			<artifactId>javax-activation-api</artifactId>
-			<version>1.2.0-6</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
