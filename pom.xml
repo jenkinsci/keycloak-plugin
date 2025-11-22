@@ -33,9 +33,6 @@
 		<!-- TODO https://github.com/jenkinsci/jenkins/pull/11269 -->
 		<jenkins.version>2.537-rc37714.d5718019b_8ff</jenkins.version>
 		<hpi.compatibleSinceVersion>2.3.1</hpi.compatibleSinceVersion>
-
-		<!-- AvatarContributor in KeycloakAvatarProperty; SuppressRestrictedWarnings doesn't work -->
-		<useBeta>true</useBeta>
 	</properties>
 
 	<licenses>
@@ -136,6 +133,12 @@
 		<dependency>
 			<groupId>org.jenkins-ci.plugins</groupId>
 			<artifactId>jackson2-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.kohsuke</groupId>
+			<artifactId>access-modifier-suppressions</artifactId>
+			<version>1.35</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.jenkins</groupId>
