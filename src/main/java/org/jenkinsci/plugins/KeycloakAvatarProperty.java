@@ -5,6 +5,7 @@ import hudson.Extension;
 import hudson.model.User;
 import hudson.model.UserProperty;
 import hudson.model.UserPropertyDescriptor;
+import jenkins.security.csp.AvatarContributor;
 
 public class KeycloakAvatarProperty extends UserProperty {
 
@@ -69,10 +70,16 @@ public class KeycloakAvatarProperty extends UserProperty {
 
         public AvatarImage(String url) {
             this.url = url;
+            AvatarContributor.allow(url);
         }
 
         public boolean isValid() {
             return url != null;
+        }
+
+        private Object readResolve() {
+            AvatarContributor.allow(url);
+            return this;
         }
     }
 }
