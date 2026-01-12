@@ -5,6 +5,8 @@ import hudson.Extension;
 import hudson.model.User;
 import hudson.model.UserProperty;
 import hudson.model.UserPropertyDescriptor;
+import jenkins.security.csp.AvatarContributor;
+import org.kohsuke.accmod.restrictions.suppressions.SuppressRestrictedWarnings;
 
 public class KeycloakAvatarProperty extends UserProperty {
 
@@ -64,15 +66,22 @@ public class KeycloakAvatarProperty extends UserProperty {
     /**
      * Keycloak avatar is the standard picture field on the profile claim.
      */
+    @SuppressRestrictedWarnings(AvatarContributor.class)
     public static class AvatarImage {
         private final String url;
 
         public AvatarImage(String url) {
             this.url = url;
+            AvatarContributor.allow(url);
         }
 
         public boolean isValid() {
             return url != null;
+        }
+
+        private Object readResolve() {
+            AvatarContributor.allow(url);
+            return this;
         }
     }
 }
