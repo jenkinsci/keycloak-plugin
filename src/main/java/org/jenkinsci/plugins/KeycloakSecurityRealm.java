@@ -38,6 +38,8 @@ import javax.security.cert.X509Certificate;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import hudson.security.ChainedServletFilter2;
+
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Util;
@@ -365,6 +367,18 @@ public class KeycloakSecurityRealm extends SecurityRealm {
 			}
 		});
 		return sc;
+	}
+
+	/**
+	 * Extends the default security filter chain with {@link BearerTokenFilter} so
+	 * that REST / API requests carrying a Keycloak access token as
+	 * {@code Authorization: Bearer <token>} are authenticated. The extra filter
+	 * runs after session integration and the anonymous filter, so the
+	 * authentication it sets is honoured by Jenkins' permission checks.
+	 */
+	@Override
+	public jakarta.servlet.Filter createFilter(jakarta.servlet.FilterConfig filterConfig) {
+		return new ChainedServletFilter2(super.createFilter(filterConfig), new BearerTokenFilter());
 	}
 
 	@Override
