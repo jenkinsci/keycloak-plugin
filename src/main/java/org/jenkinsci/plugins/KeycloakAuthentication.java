@@ -46,6 +46,20 @@ public class KeycloakAuthentication extends AbstractAuthenticationToken {
 		setAuthenticated(true);
 	}
 
+	/**
+	 * Constructor for stateless bearer-token (REST API) authentication. The
+	 * identity and authorities come solely from an already-verified Keycloak
+	 * access token; there is no ID token, refresh token or session.
+	 *
+	 * @param accessToken  the verified Keycloak access token
+	 * @param resourceName the adapter resource / client name, used to map client roles
+	 */
+	public KeycloakAuthentication(AccessToken accessToken, String resourceName) {
+		super(buildRoles(accessToken, resourceName));
+		this.userName = accessToken.getPreferredUsername();
+		setAuthenticated(true);
+	}
+
 	@SuppressWarnings("unchecked")
 	private static Collection<GrantedAuthority> buildRoles(AccessToken accessToken, String resourceName) {
 		List<GrantedAuthority> roles = new ArrayList<>();
